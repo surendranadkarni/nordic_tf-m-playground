@@ -1,6 +1,4 @@
-.. _crypto_aes_cbc:
-
-Crypto: AES CBC
+TF-M playground Sample Application
 ###############
 
 .. contents::
@@ -12,11 +10,7 @@ The AES CBC sample shows how to perform AES encryption and decryption operations
 Requirements
 ************
 
-The sample supports the following development kits:
-
-.. table-from-sample-yaml::
-
-.. include:: /includes/tfm.txt
+The sample is tested on nRF54L15 DK kit
 
 Overview
 ********
@@ -30,26 +24,31 @@ The sample performs the following operations:
 
 #. Encryption and decryption of a sample plaintext:
 
-   a. A random initialization vector (IV) is generated.
-   #. Encryption is performed.
-   #. Decryption is performed.
+#. Sample to test ECDSA signature generation and verification:
 
+#. Sample to test HMAC generation and verification:
 #. Cleanup:
 
-   a. The AES key is removed from the PSA crypto keystore.
+
 
 Building and running
 ********************
 
-.. |sample path| replace:: :file:`samples/crypto/aes_cbc`
-
-.. include:: /includes/build_and_run_ns.txt
+To build and run the sample application, follow these steps:
+```
+west build --build-dir ./aes_cbc_nordic/build ./aes_cbc_nordic --pristine --board nrf54l15dk/nrf54l15/cpuapp/ns -- -DCONF_FILE="./aes_cbc_nordic/prj.conf" -DEXTRA_CONF_FILE=./aes_cbc_nordic/boards/nrf54l15dk_nrf54l15_cpuapp_ns.conf
+```
 
 Testing
 =======
 
 After programming the sample to your development kit, complete the following steps to test it:
 
-1. |connect_terminal|
+1. connect terminal emulator to the development kit UART port with the following settings:
+   - Baud rate: 115200
+   - Data bits: 8
+   - Parity: None
+   - Stop bits: 1
+   - Flow control: None
 #. Compile and program the application.
 #. Observe the logs from the application using a terminal emulator.
