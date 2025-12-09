@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <psa/crypto.h>
 #include <psa/crypto_extra.h>
+#include <zephyr/shell/shell.h>
 
 #ifdef CONFIG_BUILD_WITH_TFM
 #include <tfm_ns_interface.h>
@@ -173,6 +174,7 @@ static  int hmac_verify(void)
 	return APP_SUCCESS;
 }
 
+
 int hmac_main(void)
 {
 	int status;
@@ -208,3 +210,18 @@ int hmac_main(void)
 
 	return APP_SUCCESS;
 }
+
+static int test_hmac(const struct shell *shell, size_t argc, char **argv)
+{
+    // The first argument (argv[0]) is always the command name itself
+    hmac_main();
+    return 0;
+}
+
+/* Register the "hello" command */
+SHELL_CMD_REGISTER(
+    test_hmac,         /* Command name (must be unique) */
+    NULL,          /* Subcommands array (NULL for a simple root command) */
+    "testhmac", /* Command help string */
+    test_hmac /* Pointer to the handler function */
+);
