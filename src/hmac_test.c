@@ -92,7 +92,7 @@ static int generate_key(void)
 	/* After the key handle is acquired the attributes are not needed */
 	psa_reset_key_attributes(&key_attributes);
 
-	LOG_INF("HMAC key generated successfully!");
+	LOG_INF("HMAC key generated successfully! %u", key_id);
 
 	return APP_SUCCESS;
 }
@@ -174,19 +174,29 @@ static  int hmac_verify(void)
 	return APP_SUCCESS;
 }
 
+int hmac_init(void)
+{
+	int status = generate_key();
+	if (status != APP_SUCCESS) {
+		LOG_INF(APP_ERROR_MESSAGE);
+		return APP_ERROR;
+	}
+	return APP_SUCCESS;
+}
+
+int hmac_term(void)
+{
+	int status = crypto_finish();
+	if (status != APP_SUCCESS) {
+		LOG_INF(APP_ERROR_MESSAGE);
+		return APP_ERROR;
+	}
+}
 
 int hmac_main(void)
 {
 	int status;
 
-	LOG_INF("Starting HMAC example...");
-
-
-	status = generate_key();
-	if (status != APP_SUCCESS) {
-		LOG_INF(APP_ERROR_MESSAGE);
-		return APP_ERROR;
-	}
 
 	status = hmac_sign();
 	if (status != APP_SUCCESS) {
@@ -200,11 +210,7 @@ int hmac_main(void)
 		return APP_ERROR;
 	}
 
-	status = crypto_finish();
-	if (status != APP_SUCCESS) {
-		LOG_INF(APP_ERROR_MESSAGE);
-		return APP_ERROR;
-	}
+
 
 	LOG_INF(APP_SUCCESS_MESSAGE);
 
@@ -218,10 +224,37 @@ static int test_hmac(const struct shell *shell, size_t argc, char **argv)
     return 0;
 }
 
-/* Register the "hello" command */
+static int shell_hmac_init(const struct shell *shell, size_t argc, char **argv)
+{
+    // The first argument (argv[0]) is always the command name itself
+    hmac_init();
+    return 0;
+}
+
+static int shell_hmac_term(const struct shell *shell, size_t argc, char **argv)
+{
+	// The first argument (argv[0]) is always the command name itself
+	hmac_term();
+	return 0;
+}
+
 SHELL_CMD_REGISTER(
     test_hmac,         /* Command name (must be unique) */
     NULL,          /* Subcommands array (NULL for a simple root command) */
     "testhmac", /* Command help string */
     test_hmac /* Pointer to the handler function */
+);
+
+SHELL_CMD_REGISTER(
+    test_hmac_init,         /* Command name (must be unique) */
+    NULL,          /* Subcommands array (NULL for a simple root command) */
+    "hmac init", /* Command help string */
+    shell_hmac_init /* Pointer to the handler function */
+);
+
+SHELL_CMD_REGISTER(
+    shell_hmac_term,         /* Command name (must be unique) */
+    NULL,          /* Subcommands array (NULL for a simple root command) */
+    "hmac term", /* Command help string */
+    shell_hmac_term /* Pointer to the handler function */
 );

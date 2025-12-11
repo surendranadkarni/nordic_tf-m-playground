@@ -264,6 +264,7 @@ int aes_cbc_main(void)
 }
 extern int ecdsa_main(void);
 extern int hmac_main(void);
+extern int hmac_init(void);
 int main(void)
 {
 	int status;
@@ -272,9 +273,13 @@ int main(void)
 		LOG_INF(APP_ERROR_MESSAGE);
 		return APP_ERROR;
 	}
+	status = hmac_init();
+	if (status != APP_SUCCESS) {
+		LOG_INF(APP_ERROR_MESSAGE);
+		return APP_ERROR;
+	}
 	aes_cbc_main();
 	ecdsa_main();
-	hmac_main();
 
 	return 0;
 }
