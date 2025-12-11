@@ -36,7 +36,7 @@ Building and running
 
 To build and run the sample application, follow these steps:
 ```
-west build --build-dir ./aes_cbc_nordic/build ./aes_cbc_nordic --pristine --board nrf54l15dk/nrf54l15/cpuapp/ns -- -DCONF_FILE="./aes_cbc_nordic/prj.conf" -DEXTRA_CONF_FILE=./aes_cbc_nordic/boards/nrf54l15dk_nrf54l15_cpuapp_ns.conf
+west build --build-dir ./build ./ --pristine --board nrf5340dk/nrf5340/cpuapp/ns --sysbuild -- -DEXTRA_CONF_FILE=./boards/nrf5340dk_nrf5340_cpuapp_ns.conf -DCONF_FILE="./prj.conf"
 ```
 
 Testing
@@ -50,5 +50,14 @@ After programming the sample to your development kit, complete the following ste
    - Parity: None
    - Stop bits: 1
    - Flow control: None
-#. Compile and program the application.
+#. Compile and program the the provisoning image application for nrf53 tehn flash the test application
+```
+west flash --erase --recover -d build_provisioning_image
+```
+
+flash application 
+
+```
+west flash -d build
+```
 #. Observe the logs from the application using a terminal emulator.
