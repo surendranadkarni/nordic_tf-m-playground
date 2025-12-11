@@ -194,7 +194,7 @@ static int sign_message(void)
 	psa_status_t status;
 	int64_t end_time = 0;
     uint64_t start_tick, end_tick;
-    start_tick =  k_cycle_get_64();
+    start_tick =  k_uptime_ticks();
 	int64_t start_time = k_uptime_get();
 	LOG_INF("Signing a message using ECDSA...");
     /* Compute the hash of the message in chunks */
@@ -202,6 +202,12 @@ static int sign_message(void)
     if (status != APP_SUCCESS) {
         return APP_ERROR;
     }
+
+	#ifdef CONFIG_TIMER_HAS_64BIT_CYCLE_COUNTER
+	LOG_INF("64-bit cycle counter is enabled.");
+	#else
+	LOG_INF("64-bit cycle counter is NOT enabled.");
+	#endif
 
 	/* Sign the hash */
 	status = psa_sign_hash(keypair_id,
@@ -217,7 +223,7 @@ static int sign_message(void)
 	}
 
 	end_time = k_uptime_get();
-    end_tick = k_cycle_get_64();
+    end_tick = k_uptime_ticks();
     LOG_INF("Time taken to sign the message: %lld ticks. Ticks per seonds %lld ", (end_tick - start_tick), sys_clock_hw_cycles_per_sec());
 	LOG_INF("Message signed successfully!");
 	LOG_INF("Time taken to sign the message: %lld ms", (end_time - start_time));
